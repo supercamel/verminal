@@ -1,0 +1,147 @@
+{
+  "name": "Verminal",
+  "entry": {
+    "type": "native",
+    "linux": "build/verminal",
+    "windows": "build-win/verminal.exe"
+  },
+  "native_projects": [
+    {
+      "name": "verminal",
+      "dir": ".",
+      "build": [
+        "meson setup build --wipe || meson setup build",
+        "ninja -C build"
+      ]
+    }
+  ],
+  "linux": {
+    "arches": [
+      {
+        "arch": "x86_64",
+        "build_dir": "build-linux-x86_64",
+        "entry_linux": "build-linux-x86_64/verminal",
+        "deb": {
+          "download": true,
+          "packages": [
+            "libgtk-4-dev",
+            "gir1.2-gtk-4.0",
+            "libglib2.0-dev",
+            "libgirepository-1.0-1"
+          ]
+        },
+        "inherit_native_projects": false,
+        "native_projects": [
+          {
+            "name": "gserial",
+            "repo": "https://github.com/supercamel/gserial.git",
+            "dir": ".sqgipkg/native/gserial",
+            "branch": "master",
+            "update": true,
+            "build": [
+              "sh ../../../scripts/disable-cross-gir.sh meson.build",
+              "bash ../../../scripts/meson-setup-linux.sh build-linux-x86_64 . \"$SQGI_LINUX_PREFIX\" \"lib/$SQGI_LINUX_TRIPLET\"",
+              "ninja -C build-linux-x86_64",
+              "env -i PATH=/usr/bin:/bin HOME=\"$HOME\" meson setup build-host --wipe || env -i PATH=/usr/bin:/bin HOME=\"$HOME\" meson setup build-host",
+              "env -i PATH=/usr/bin:/bin HOME=\"$HOME\" ninja -C build-host"
+            ],
+            "install": [
+              "meson install -C build-linux-x86_64 --destdir \"$SQGI_LINUX_SYSROOT\""
+            ],
+            "stage": false
+          },
+          {
+            "name": "verminal",
+            "dir": ".",
+            "build": [
+              "VALAFLAGS=\"--vapidir=$PWD/.sqgipkg/native/gserial/build-host $VALAFLAGS\" bash scripts/meson-setup-linux.sh \"$SQGI_LINUX_BUILD_DIR\" . \"$SQGI_LINUX_PREFIX\"",
+              "ninja -C \"$SQGI_LINUX_BUILD_DIR\""
+            ]
+          }
+        ]
+      },
+      {
+        "arch": "aarch64",
+        "build_dir": "build-linux-aarch64",
+        "entry_linux": "build-linux-aarch64/verminal",
+        "deb": {
+          "download": true,
+          "packages": [
+            "libgtk-4-dev",
+            "gir1.2-gtk-4.0",
+            "libglib2.0-dev",
+            "libgirepository-1.0-1"
+          ]
+        },
+        "inherit_native_projects": false,
+        "native_projects": [
+          {
+            "name": "gserial",
+            "repo": "https://github.com/supercamel/gserial.git",
+            "dir": ".sqgipkg/native/gserial",
+            "branch": "master",
+            "update": true,
+            "build": [
+              "sh ../../../scripts/disable-cross-gir.sh meson.build",
+              "bash ../../../scripts/meson-setup-linux.sh build-linux-aarch64 . \"$SQGI_LINUX_PREFIX\" \"lib/$SQGI_LINUX_TRIPLET\"",
+              "ninja -C build-linux-aarch64",
+              "env -i PATH=/usr/bin:/bin HOME=\"$HOME\" meson setup build-host --wipe || env -i PATH=/usr/bin:/bin HOME=\"$HOME\" meson setup build-host",
+              "env -i PATH=/usr/bin:/bin HOME=\"$HOME\" ninja -C build-host"
+            ],
+            "install": [
+              "meson install -C build-linux-aarch64 --destdir \"$SQGI_LINUX_SYSROOT\""
+            ],
+            "stage": false
+          },
+          {
+            "name": "verminal",
+            "dir": ".",
+            "build": [
+              "VALAFLAGS=\"--vapidir=$PWD/.sqgipkg/native/gserial/build-host $VALAFLAGS\" bash scripts/meson-setup-linux.sh \"$SQGI_LINUX_BUILD_DIR\" . \"$SQGI_LINUX_PREFIX\"",
+              "ninja -C \"$SQGI_LINUX_BUILD_DIR\""
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "windows": {
+    "msys2_prefix": "mingw64",
+    "gdk_backend": "win32",
+    "packages": [
+      "mingw-w64-x86_64-vala",
+      "mingw-w64-x86_64-gtk4"
+    ],
+    "native_dependencies": [
+      {
+        "name": "gserial",
+        "repo": "https://github.com/supercamel/gserial.git",
+        "dir": ".sqgipkg/native/gserial",
+        "branch": "master",
+        "update": true,
+        "build": [
+          "sh ../../../scripts/disable-cross-gir.sh meson.build",
+          "meson setup build-win --cross-file \"$SQGI_MESON_CROSS_FILE\" --prefix \"$SQGI_WINDOWS_PREFIX\" --wipe || meson setup build-win --cross-file \"$SQGI_MESON_CROSS_FILE\" --prefix \"$SQGI_WINDOWS_PREFIX\"",
+          "ninja -C build-win",
+          "env -i PATH=/usr/bin:/bin HOME=\"$HOME\" meson setup build-host --wipe || env -i PATH=/usr/bin:/bin HOME=\"$HOME\" meson setup build-host",
+          "env -i PATH=/usr/bin:/bin HOME=\"$HOME\" ninja -C build-host"
+        ],
+        "install": [
+          "meson install -C build-win --destdir \"$SQGI_WINDOWS_SYSROOT\""
+        ],
+        "stage": false
+      }
+    ],
+    "build": [],
+    "native_projects": [
+      {
+        "name": "verminal",
+        "dir": ".",
+        "build": [
+          "VALAFLAGS=\"--vapidir=$PWD/.sqgipkg/native/gserial/build-host $VALAFLAGS\" meson setup build-win --cross-file \"$SQGI_MESON_CROSS_FILE\" --wipe || VALAFLAGS=\"--vapidir=$PWD/.sqgipkg/native/gserial/build-host $VALAFLAGS\" meson setup build-win --cross-file \"$SQGI_MESON_CROSS_FILE\"",
+          "ninja -C build-win"
+        ]
+      }
+    ]
+  }
+}

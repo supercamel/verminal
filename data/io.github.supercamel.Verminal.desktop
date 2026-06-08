@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Verminal
+Comment=Serial, TCP, and UDP terminal
+Exec=verminal
+Icon=utilities-terminal
+Terminal=false
+Type=Application
+Categories=Development;Utility;
+StartupNotify=true
