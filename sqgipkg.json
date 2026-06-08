@@ -27,6 +27,7 @@
             "libgtk-4-dev",
             "gir1.2-gtk-4.0",
             "libglib2.0-dev",
+            "gobject-introspection",
             "libgirepository-1.0-1"
           ]
         },
@@ -70,6 +71,7 @@
             "libgtk-4-dev",
             "gir1.2-gtk-4.0",
             "libglib2.0-dev",
+            "gobject-introspection",
             "libgirepository-1.0-1"
           ]
         },
