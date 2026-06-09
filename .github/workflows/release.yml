@@ -45,6 +45,7 @@ jobs:
             build-essential cmake ninja-build pkg-config git file ca-certificates wget \
             meson valac gobject-introspection \
             libglib2.0-dev libgirepository1.0-dev libffi-dev libcairo2-dev libgtk-4-dev \
+            libsoup-3.0-dev gir1.2-soup-3.0 \
             gcc-aarch64-linux-gnu g++-aarch64-linux-gnu qemu-user-static binfmt-support \
             mingw-w64 nsis squashfs-tools
 
