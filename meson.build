@@ -44,3 +44,8 @@ install_data(
   'data/io.github.supercamel.Verminal.metainfo.xml',
   install_dir: get_option('datadir') / 'metainfo'
 )
+
+install_data(
+  'images/io.github.supercamel.Verminal.png',
+  install_dir: get_option('datadir') / 'icons' / 'hicolor' / '256x256' / 'apps'
+)

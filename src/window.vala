@@ -33,6 +33,7 @@ namespace Verminal {
                 default_height: 720
             );
 
+            set_icon_name (Verminal.App.APP_ICON_NAME);
             build_ui ();
             install_css ();
             update_controls ();

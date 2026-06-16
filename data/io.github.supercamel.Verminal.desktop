@@ -2,7 +2,7 @@
 Name=Verminal
 Comment=Serial, TCP, and UDP terminal
 Exec=verminal
-Icon=utilities-terminal
+Icon=io.github.supercamel.Verminal
 Terminal=false
 Type=Application
 Categories=Development;Utility;
