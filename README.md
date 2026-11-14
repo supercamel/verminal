@@ -44,8 +44,10 @@ sqgipkg build --platform android --arch x86_64
 
 Outputs are under `dist-linux-x86_64/`, `dist-linux-aarch64/`,
 `dist-windows-x86_64/`, `dist-android-arm64-v8a/`, and `dist-android-x86_64/`.
-Individual Android builds use `dist-android/`. APKs use debug signing for local
-installation. Store distribution needs release signing. `sqgipkg.lock.json`
+Use `sqgipkg explain --platform android --arch x86_64 --json` to check individual
+build paths for your installed sqgipkg version; older versions use `dist-android/`.
+APKs use debug signing for local installation. Store distribution needs release
+signing. `sqgipkg.lock.json`
 is a generated build receipt (also copied into release artifacts) that records
 resolved package checksums; use `--locked` to replay those inputs with
 the recorded toolchain. The release workflow builds all targets and attaches
