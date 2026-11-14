@@ -43,8 +43,8 @@
       "sdk": "noble-android-r7",
       "format": "apk",
       "min_sdk": 31,
-      "version_code": 2,
-      "version_name": "0.2.0",
+      "version_code": 3,
+      "version_name": "0.3.0",
       "namespaces": ["Gtk-4.0", "GSerial-1.0"],
       "permissions": ["android.permission.INTERNET"]
     }
