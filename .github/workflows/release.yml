@@ -1,6 +1,6 @@
 name: Release
 
-# Builds the Linux AppImages (x86_64 + aarch64) and the Windows installer with
+# Builds Linux AppImages, the Windows installer, and Android APKs with
 # sqgipkg, then publishes them as release assets.
 #
 # Push a tag like `v1.0.0` to cut a release, or run the workflow manually to
@@ -45,7 +45,14 @@ jobs:
             meson valac gobject-introspection \
             libglib2.0-dev libgirepository1.0-dev libffi-dev libcairo2-dev libgtk-4-dev \
             gcc-aarch64-linux-gnu g++-aarch64-linux-gnu qemu-user-static binfmt-support \
-            mingw-w64 nsis squashfs-tools
+            mingw-w64 nsis squashfs-tools unzip curl libgdk-pixbuf-2.0-dev \
+            llvm-18-dev libxml2-utils gir1.2-soup-3.0
+
+      - name: Set up Java for Android packaging
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
 
       - name: Build and install sqgi
         run: |
@@ -54,17 +61,17 @@ jobs:
           sudo cmake --install sqgi/build --prefix /usr/local
           sudo ldconfig
 
-      - name: Build Linux x86_64 AppImage
+      - name: Prepare Android toolchain
         working-directory: Verminal
-        run: sqgipkg --target appimage --appimage-arch x86_64 --sqgi-source-dir "$GITHUB_WORKSPACE/sqgi"
+        run: sqgipkg setup --platform android --native-tools --accept-licenses
 
-      - name: Build Linux aarch64 AppImage
+      - name: Validate all platforms
         working-directory: Verminal
-        run: sqgipkg --target appimage --appimage-arch aarch64 --sqgi-source-dir "$GITHUB_WORKSPACE/sqgi"
+        run: sqgipkg check --target all
 
-      - name: Build Windows installer
+      - name: Build all platforms
         working-directory: Verminal
-        run: sqgipkg --target win-nsis --sqgi-source-dir "$GITHUB_WORKSPACE/sqgi"
+        run: sqgipkg build --target all --write-lock
 
       - name: Collect artifacts
         working-directory: Verminal
@@ -73,6 +80,8 @@ jobs:
           cp dist-linux-x86_64/Verminal.AppImage    artifacts/Verminal-x86_64.AppImage
           cp dist-linux-aarch64/Verminal.AppImage   artifacts/Verminal-aarch64.AppImage
           cp dist-windows-x86_64/Verminal-Setup.exe artifacts/Verminal-Setup.exe
+          cp dist-android-arm64-v8a/*.apk dist-android-x86_64/*.apk artifacts/
+          cp sqgipkg.lock.json artifacts/
           ls -lh artifacts
 
       - name: Upload build artifacts

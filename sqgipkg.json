@@ -1,163 +1,56 @@
 {
+  "schema_version": 2,
   "name": "Verminal",
   "app_id": "io.github.supercamel.Verminal",
   "icon": "images/io.github.supercamel.Verminal.png",
+  "features": ["gtk4"],
+  "target": "all",
+  "compile_scripts": false,
   "desktop_terminal": false,
-  "desktop_categories": [
-    "Development",
-    "Utility",
-    "GTK"
-  ],
+  "desktop_categories": ["Development", "Utility", "GTK"],
   "entry": {
     "type": "native",
-    "linux": "build/verminal",
-    "windows": "build-win/verminal.exe"
+    "project": "verminal",
+    "executable": "verminal",
+    "android": {
+      "project": "verminal",
+      "library": "libverminal.so",
+      "symbol": "sqgi_android_main"
+    }
   },
-  "native_projects": [
+  "native": [
+    {
+      "name": "gserial",
+      "linux_package": "gserial",
+      "windows_package": "gserial",
+      "android_package": "extras-gserial"
+    },
     {
       "name": "verminal",
       "dir": ".",
-      "build": [
-        "meson setup build --wipe || meson setup build",
-        "ninja -C build"
-      ]
+      "build_system": "meson",
+      "depends_on": ["gserial"]
     }
   ],
-  "linux": {
-    "arches": [
-      {
-        "arch": "x86_64",
-        "build_dir": "build-linux-x86_64",
-        "entry_linux": "build-linux-x86_64/verminal",
-        "deb": {
-          "download": true,
-          "packages": [
-            "libgtk-4-dev",
-            "gir1.2-gtk-4.0",
-            "libglib2.0-dev",
-            "gobject-introspection",
-            "libgirepository-1.0-1"
-          ]
-        },
-        "inherit_native_projects": false,
-        "native_projects": [
-          {
-            "name": "gserial",
-            "repo": "https://github.com/supercamel/gserial.git",
-            "dir": ".sqgipkg/native/gserial",
-            "branch": "master",
-            "update": true,
-            "build": [
-              "sh ../../../scripts/disable-cross-gir.sh meson.build",
-              "bash ../../../scripts/meson-setup-linux.sh build-linux-x86_64 . \"$SQGI_LINUX_PREFIX\" \"lib/$SQGI_LINUX_TRIPLET\"",
-              "ninja -C build-linux-x86_64",
-              "env -i PATH=/usr/bin:/bin HOME=\"$HOME\" meson setup build-host --wipe || env -i PATH=/usr/bin:/bin HOME=\"$HOME\" meson setup build-host",
-              "env -i PATH=/usr/bin:/bin HOME=\"$HOME\" ninja -C build-host"
-            ],
-            "install": [
-              "meson install -C build-linux-x86_64 --destdir \"$SQGI_LINUX_SYSROOT\""
-            ],
-            "stage": false
-          },
-          {
-            "name": "verminal",
-            "dir": ".",
-            "build": [
-              "VALAFLAGS=\"--vapidir=$PWD/.sqgipkg/native/gserial/build-host $VALAFLAGS\" bash scripts/meson-setup-linux.sh \"$SQGI_LINUX_BUILD_DIR\" . \"$SQGI_LINUX_PREFIX\"",
-              "ninja -C \"$SQGI_LINUX_BUILD_DIR\""
-            ]
-          }
-        ]
-      },
-      {
-        "arch": "aarch64",
-        "build_dir": "build-linux-aarch64",
-        "entry_linux": "build-linux-aarch64/verminal",
-        "deb": {
-          "download": true,
-          "packages": [
-            "libgtk-4-dev",
-            "gir1.2-gtk-4.0",
-            "libglib2.0-dev",
-            "gobject-introspection",
-            "libgirepository-1.0-1"
-          ]
-        },
-        "inherit_native_projects": false,
-        "native_projects": [
-          {
-            "name": "gserial",
-            "repo": "https://github.com/supercamel/gserial.git",
-            "dir": ".sqgipkg/native/gserial",
-            "branch": "master",
-            "update": true,
-            "build": [
-              "sh ../../../scripts/disable-cross-gir.sh meson.build",
-              "bash ../../../scripts/meson-setup-linux.sh build-linux-aarch64 . \"$SQGI_LINUX_PREFIX\" \"lib/$SQGI_LINUX_TRIPLET\"",
-              "ninja -C build-linux-aarch64",
-              "env -i PATH=/usr/bin:/bin HOME=\"$HOME\" meson setup build-host --wipe || env -i PATH=/usr/bin:/bin HOME=\"$HOME\" meson setup build-host",
-              "env -i PATH=/usr/bin:/bin HOME=\"$HOME\" ninja -C build-host"
-            ],
-            "install": [
-              "meson install -C build-linux-aarch64 --destdir \"$SQGI_LINUX_SYSROOT\""
-            ],
-            "stage": false
-          },
-          {
-            "name": "verminal",
-            "dir": ".",
-            "build": [
-              "VALAFLAGS=\"--vapidir=$PWD/.sqgipkg/native/gserial/build-host $VALAFLAGS\" bash scripts/meson-setup-linux.sh \"$SQGI_LINUX_BUILD_DIR\" . \"$SQGI_LINUX_PREFIX\"",
-              "ninja -C \"$SQGI_LINUX_BUILD_DIR\""
-            ]
-          }
-        ]
-      }
-    ]
+  "platforms": {
+    "linux": {
+      "architectures": ["x86_64", "aarch64"],
+      "baseline": "ubuntu-24.04"
+    },
+    "windows": {"architectures": ["x86_64"], "format": "installer"},
+    "android": {
+      "architectures": ["arm64-v8a", "x86_64"],
+      "sdk": "noble-android-r7",
+      "format": "apk",
+      "min_sdk": 31,
+      "version_code": 2,
+      "version_name": "0.2.0",
+      "namespaces": ["Gtk-4.0", "GSerial-1.0"],
+      "permissions": ["android.permission.INTERNET"]
+    }
   },
   "windows": {
-    "msys2_prefix": "mingw64",
-    "gdk_backend": "win32",
-    "packages": [
-      "mingw-w64-x86_64-vala",
-      "mingw-w64-x86_64-gtk4"
-    ],
-    "native_dependencies": [
-      {
-        "name": "gserial",
-        "repo": "https://github.com/supercamel/gserial.git",
-        "dir": ".sqgipkg/native/gserial",
-        "branch": "master",
-        "update": true,
-        "build": [
-          "sh ../../../scripts/disable-cross-gir.sh meson.build",
-          "meson setup build-win --cross-file \"$SQGI_MESON_CROSS_FILE\" --prefix \"$SQGI_WINDOWS_PREFIX\" --wipe || meson setup build-win --cross-file \"$SQGI_MESON_CROSS_FILE\" --prefix \"$SQGI_WINDOWS_PREFIX\"",
-          "ninja -C build-win",
-          "env -i PATH=/usr/bin:/bin HOME=\"$HOME\" meson setup build-host --wipe || env -i PATH=/usr/bin:/bin HOME=\"$HOME\" meson setup build-host",
-          "env -i PATH=/usr/bin:/bin HOME=\"$HOME\" ninja -C build-host"
-        ],
-        "install": [
-          "meson install -C build-win --destdir \"$SQGI_WINDOWS_SYSROOT\""
-        ],
-        "stage": false
-      }
-    ],
-    "files": [
-      "images/io.github.supercamel.Verminal.png=share/icons/hicolor/256x256/apps/io.github.supercamel.Verminal.png"
-    ],
-    "build": [],
-    "native_projects": [
-      {
-        "name": "verminal",
-        "dir": ".",
-        "build": [
-          "VALAFLAGS=\"--vapidir=$PWD/.sqgipkg/native/gserial/build-host $VALAFLAGS\" meson setup build-win --cross-file \"$SQGI_MESON_CROSS_FILE\" --wipe || VALAFLAGS=\"--vapidir=$PWD/.sqgipkg/native/gserial/build-host $VALAFLAGS\" meson setup build-win --cross-file \"$SQGI_MESON_CROSS_FILE\"",
-          "ninja -C build-win"
-        ]
-      }
-    ],
-    "nsis_options": {
-      "icon": "images/verminal.ico"
-    }
+    "console": false,
+    "nsis_options": {"icon": "images/verminal.ico"}
   }
 }

@@ -1,7 +1,7 @@
 namespace Verminal {
     public class ConnectionConfig : Object {
         public ConnectionKind kind { get; set; default = ConnectionKind.SERIAL; }
-        public string serial_path { get; set; default = "/dev/ttyUSB0"; }
+        public string serial_path { get; set; default = ""; }
         public uint serial_baud { get; set; default = 115200; }
         public string host { get; set; default = "127.0.0.1"; }
         public uint16 port { get; set; default = 23; }
@@ -51,8 +51,11 @@ namespace Verminal {
             port.set_baud (config.serial_baud);
             port.set_timeout (20);
 
-            if (!port.open (config.serial_path)) {
-                error = "Could not open %s".printf (config.serial_path);
+            try {
+                if (!port.open_full (config.serial_path))
+                    throw new IOError.FAILED ("Could not open %s".printf (config.serial_path));
+            } catch (Error e) {
+                error = e.message;
                 port = null;
                 return false;
             }

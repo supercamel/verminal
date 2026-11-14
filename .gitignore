@@ -7,3 +7,5 @@ artifacts/
 *.AppImage
 *.exe
 *.nsi
+# Generated package receipt, distributed with the artifacts, not native sources.
+/sqgipkg.lock.json

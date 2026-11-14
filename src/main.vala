@@ -207,15 +207,24 @@ public class Verminal.App : Gtk.Application {
     }
 }
 
-public int main (string[] args) {
+[CCode (cname = "verminal_run")]
+public int verminal_run (string[] args) {
     Environment.set_prgname (Verminal.App.APP_ID);
     Environment.set_application_name (Verminal.App.APP_NAME);
     Gtk.Window.set_default_icon_name (Verminal.App.APP_ICON_NAME);
 
+#if !ANDROID
     var desktop_path = Verminal.App.install_appimage_desktop_entry ();
     if (desktop_path != null && Verminal.App.maybe_relaunch_from_desktop (desktop_path)) {
         return 0;
     }
+#endif
 
     return new Verminal.App ().run (args);
 }
+
+#if !ANDROID && !TESTING
+public int main (string[] args) {
+    return verminal_run (args);
+}
+#endif
