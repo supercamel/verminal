@@ -21,6 +21,8 @@ env:
   # appimagetool runs as an AppImage; GitHub runners cannot always mount FUSE,
   # so extract-and-run instead of mounting.
   APPIMAGE_EXTRACT_AND_RUN: '1'
+  # Let sqgipkg provision Gradle 8.9 instead of using the runner's version.
+  GRADLE_HOME: ''
 
 jobs:
   build:
