@@ -63,7 +63,13 @@ jobs:
 
       - name: Prepare Android toolchain
         working-directory: Verminal
-        run: sqgipkg setup --platform android --native-tools --accept-licenses
+        run: |
+          # Hosted runners select their own NDK by default. Use the revision
+          # required by sqgipkg's Android SDK for setup and subsequent builds.
+          verminal_android_sdk="${ANDROID_SDK_ROOT:-${ANDROID_HOME:?Android SDK path is missing}}"
+          export ANDROID_NDK_HOME="$verminal_android_sdk/ndk/28.2.13676358"
+          printf 'ANDROID_NDK_HOME=%s\n' "$ANDROID_NDK_HOME" >> "$GITHUB_ENV"
+          sqgipkg setup --platform android --native-tools --accept-licenses
 
       - name: Validate all platforms
         working-directory: Verminal
