@@ -37,6 +37,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: supercamel/sqgi
+          # Pin the tested packaging toolchain, including Windows VAPI lookup.
+          ref: 28dbd8a893a8914e74a0a78874a02f1b25798fbc
           path: sqgi
 
       - name: Install build dependencies
