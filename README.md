@@ -10,6 +10,13 @@ data in one log.
 - Use USB serial adapters on Android through USB OTG.
 - Work with a layout that adapts to phone, tablet, and desktop displays.
 
+## Screenshots
+
+| Desktop (Linux) | Android |
+| :---: | :---: |
+| <img src="images/screenshots/desktop.png" alt="Verminal on Linux showing sent commands and received responses over a serial connection" width="740"> | <img src="images/screenshots/android.png" alt="Verminal on Android showing TCP connection settings and ASCII or HEX payload options" width="300"> |
+| Serial traffic with a simulated device. | Compact connection settings in the Android emulator. |
+
 ## Download and install
 
 Get the app from the [latest release](https://github.com/supercamel/verminal/releases/latest)
