@@ -18,7 +18,8 @@ namespace Verminal {
         public abstract bool send (uint8[] bytes, out string error);
         public abstract void close ();
 
-        protected void emit_received_main (uint8[] bytes) {
+        protected void emit_received_main (owned uint8[] bytes) {
+            // The queued callback must own the chunk until the UI has consumed it.
             Idle.add (() => {
                 received (bytes);
                 return Source.REMOVE;
@@ -150,7 +151,7 @@ namespace Verminal {
                     if (count <= 0) break;
                     uint8[] chunk = new uint8[count];
                     Memory.copy (chunk, buffer, count);
-                    emit_received_main (chunk);
+                    emit_received_main ((owned) chunk);
                 } catch (Error e) {
                     if (!closing) emit_failed_main (e.message);
                     break;
@@ -236,7 +237,7 @@ namespace Verminal {
                     if (count <= 0) continue;
                     uint8[] chunk = new uint8[count];
                     Memory.copy (chunk, buffer, count);
-                    emit_received_main (chunk);
+                    emit_received_main ((owned) chunk);
                 } catch (Error e) {
                     if (!closing) emit_failed_main (e.message);
                     break;

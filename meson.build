@@ -42,6 +42,14 @@ else
 endif
 
 if get_option('tests') and host_machine.system() == 'linux'
+  network_test = executable('test-network',
+    files('src/terminal_utils.vala', 'src/transports.vala', 'tests/network.vala'),
+    dependencies: [gio_dep, glib_dep, gserial_dep])
+  foreach protocol : ['tcp', 'udp']
+    test(protocol + '-receive', find_program('python3'),
+      args: [files('tests/run-network.py'), network_test, protocol], timeout: 30)
+  endforeach
+
   ui_test = executable('test-ui', sources + files('tests/ui.vala'),
     vala_args: ['--define=TESTING'], dependencies: deps)
   test('responsive-ui', find_program('python3'),
